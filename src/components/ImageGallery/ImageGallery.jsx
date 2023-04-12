@@ -16,12 +16,14 @@ export default function ImageGallery(props) {
   const [totalPages, setTotalPages] = useState(0);
   const [page, setPage] = useState(1);
   const [largeImageURL, setLargeImageURL] = useState('');
+  const [lastLoadedPage, setLastLoadedPage] = useState(0);
 
   useEffect(() => {
     if (props.searchQuery) {
       setStatus('pending');
       setImages([]);
       setPage(1);
+      setLastLoadedPage(0);
 
       fetch(`https://pixabay.com/api/?q=${props.searchQuery}&page=1&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
         .then((response) => response.json())
@@ -49,7 +51,7 @@ export default function ImageGallery(props) {
   }, [props.searchQuery]);
 
   useEffect(() => {
-    if (page <= totalPages && page > 1) {
+    if (page <= totalPages && page > 1 && page !== lastLoadedPage) {
       setStatus('pending');
 
       fetch(`https://pixabay.com/api/?q=${props.searchQuery}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
@@ -67,6 +69,7 @@ export default function ImageGallery(props) {
             }));
             setImages((prevImages) => [...prevImages, ...images]);
             setStatus('resolved');
+            setLastLoadedPage(page);
           }
         })
         .catch((error) => {
@@ -74,7 +77,7 @@ export default function ImageGallery(props) {
           setStatus('rejected');
         });
     }
-  }, [page, props.searchQuery, totalPages]);
+  }, [lastLoadedPage, page, props.searchQuery, totalPages]);
 
   const handleImageClick = (e) => {
     if (e.target.nodeName !== 'IMG') {
