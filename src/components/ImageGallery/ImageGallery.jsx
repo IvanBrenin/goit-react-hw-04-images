@@ -74,7 +74,7 @@ export default function ImageGallery(props) {
           setStatus('rejected');
         });
     }
-  }, [page]);
+  }, [page, props.searchQuery, totalPages]);
 
   const handleImageClick = (e) => {
     if (e.target.nodeName !== 'IMG') {

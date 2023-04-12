@@ -11,11 +11,10 @@ export default function Modal({ onClose, largeImageURL }) {
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown);
-         
         return () => {
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, []);
+    });
 
     return (
         <div className={css.Overlay} onClick={onClose}>
